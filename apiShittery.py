@@ -1,10 +1,12 @@
 import googlemaps
 from datetime import datetime
 
+from numpy import outer
+
 gmaps = googlemaps.Client(key='AIzaSyC6anhq9BHUJPyoBZARXn3-Mq5PQeY4Qdg')
 
 # Geocoding an address
-geocode_result = gmaps.geocode('159 Nevada Street, Redwood City, CA')
+geocode_result = gmaps.geocode('1200 Villa Street, Mountain View, CA')
 
 # Look up an address with reverse geocoding
 reverse_geocode_result = gmaps.reverse_geocode((40.714224, -73.961452))
@@ -27,3 +29,5 @@ print(f'{geocode_result[0]["geometry"]["location"]["lat"]}, {geocode_result[0]["
 
 # Get an Address Descriptor of a location in the reverse geocoding response
 #address_descriptor_result = gmaps.reverse_geocode((40.714224, -73.961452), enable_address_descriptor=True)
+
+
