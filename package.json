@@ -1,0 +1,14 @@
+{
+  "name": "intersession-project",
+  "version": "1.0.0",
+  "description": "have github desktop add repository and press clone repository click on this onef",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.4.0"
+  }
+}
