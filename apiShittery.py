@@ -4,7 +4,7 @@ from datetime import datetime
 gmaps = googlemaps.Client(key='AIzaSyC6anhq9BHUJPyoBZARXn3-Mq5PQeY4Qdg')
 
 # Geocoding an address
-geocode_result = gmaps.geocode('1600 Amphitheatre Parkway, Mountain View, CA')
+geocode_result = gmaps.geocode('159 Nevada Street, Redwood City, CA')
 
 # Look up an address with reverse geocoding
 reverse_geocode_result = gmaps.reverse_geocode((40.714224, -73.961452))
