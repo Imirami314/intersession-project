@@ -11,8 +11,8 @@ async function computeRoute() {
   try {
     const response = await client.directions({
       params: {
-        origin: addresses["Blubby Babagump"],
-        destination: addresses["Gujrati Chapati"],
+        origin: addresses["Vanitchkin Steuck"],
+        destination: addresses["Esti Dee"],
         mode: 'driving', // You can use 'walking', 'bicycling', or 'transit'
         key: apiKey,
       },
