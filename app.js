@@ -3,13 +3,17 @@ const client = new Client({});
 
 const apiKey = 'AIzaSyC6anhq9BHUJPyoBZARXn3-Mq5PQeY4Qdg';
 
+const fs = require('fs');
+
+const addresses = JSON.parse(fs.readFileSync('addresses.json'));
+
 async function computeRoute() {
   try {
     const response = await client.directions({
       params: {
-        origin: 'San Francisco, CA',
-        destination: 'Los Angeles, CA',
-        mode: 'bicycling', // You can use 'walking', 'bicycling', or 'transit'
+        origin: addresses["Blubby Babagump"],
+        destination: addresses["Gujrati Chapati"],
+        mode: 'driving', // You can use 'walking', 'bicycling', or 'transit'
         key: apiKey,
       },
       timeout: 1000, // milliseconds
