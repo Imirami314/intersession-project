@@ -20,9 +20,8 @@ async function computeRoute() {
     const distance = route.legs[0].distance.text;
     const duration = route.legs[0].duration.text;
 
-    // console.log(`Distance: ${distance}`);
-    // console.log(`Duration: ${duration}`);
-    console.log(`Duration: ${route[0]}`);
+    console.log(`Distance: ${distance}`);
+    console.log(`Duration: ${duration}`);
   } catch (error) {
     console.error('Error fetching directions:', error.response.data.error_message);
   }
