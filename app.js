@@ -1,3 +1,7 @@
+import express from 'express';
+const app = express();
+const port = 3000;
+
 // require('dotenv').config();
 
 import dotenv from 'dotenv';
@@ -20,6 +24,7 @@ const addresses = JSON.parse(readFileSync('addresses.json'));
 
 
 import { bearing } from './angles.js';
+export const addresses = JSON.parse(readFileSync('addresses.json'));
 
 /**
  * Computes data papa
@@ -135,4 +140,23 @@ toCoords("1151 Junipero Ave, Redwood City, CA").then(location => {
 }).catch(error => {
   console.error(`An error occurred: ${error}`);
   return null;
+});
+
+// computeRoute("Gujrati Chapati", "Esti Dee");
+
+computeRoutesToSchool([
+  "Gujrati Chapati",
+  "Esti Dee",
+  "Effrey Jepstein",
+  "Bone Dome"
+]);
+
+// Define a route for the home page
+app.get('/', (req, res) => {
+  res.send('Ambasing!');
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
 });
