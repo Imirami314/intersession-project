@@ -1,9 +1,11 @@
+#THIS IS FAKE DO NOT LOOK AT THIS PLEASEEEEEEEE
+
 import googlemaps
 from datetime import datetime
 
 from numpy import outer
 
-gmaps = googlemaps.Client(key='AIzaSyC6anhq9BHUJPyoBZARXn3-Mq5PQeY4Qdg')
+gmaps = googlemaps.Client(key='krug')
 
 # Geocoding an address
 geocode_result = gmaps.geocode('1200 Villa Street, Mountain View, CA')
