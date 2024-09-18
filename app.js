@@ -1,11 +1,21 @@
-const { Client } = require('@googlemaps/google-maps-services-js');
+// require('dotenv').config();
+
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+
+
+import { Client } from '@googlemaps/google-maps-services-js';
 const client = new Client({});
 
-const apiKey = 'AIzaSyC6anhq9BHUJPyoBZARXn3-Mq5PQeY4Qdg';
+const apiKey = process.env.API_KEY;
 
-const fs = require('fs');
+console.log(`Your API key is ${apiKey}`);
 
-const addresses = JSON.parse(fs.readFileSync('addresses.json'));
+import { readFileSync } from 'fs';
+
+const addresses = JSON.parse(readFileSync('addresses.json'));
 
 /**
  * Computes data papa
