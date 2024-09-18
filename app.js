@@ -20,8 +20,6 @@ const apiKey = process.env.API_KEY;
 
 import { readFileSync } from 'fs';
 
-const addresses = JSON.parse(readFileSync('addresses.json'));
-
 
 import { bearing } from './angles.js';
 export const addresses = JSON.parse(readFileSync('addresses.json'));
