@@ -1,4 +1,6 @@
-import addresses from './app.js';
+// import addresses from './app.js';
+
+alert('d')
 
 async function initMap() {
     // Request needed libraries.
@@ -30,9 +32,6 @@ async function initMap() {
     //     position: { lat: coordinates.lat, lng: coordinates.lng },
     //   });
     // }
-  }
+}
   
-  initMap();
-
-  $('#sex').text("d")
-  alert('dadada')
+// initMap();
