@@ -118,6 +118,7 @@ async function toCoords(address) {
   .then(response => {
     if (response.data.status === 'OK') {
       const location = response.data.results[0].geometry.location;
+      console.log(location);
       return location;
     } else {
       console.error(`Error: ${response.data.status} - ${response.data.error_message}`);
@@ -128,12 +129,13 @@ async function toCoords(address) {
     console.error(`An error occurred: ${error}`);
     return null;
   });
+
+  return response;
 }
 
 // console.log(bearing(2, 4, 34, 43));
 
 toCoords("1151 Junipero Ave, Redwood City, CA").then(location => {
-  // console.log(`${location.lat}, ${location.lng}`);
   console.log(location);
 }).catch(error => {
   console.error(`An error occurred: ${error}`);
