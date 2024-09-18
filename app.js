@@ -12,7 +12,7 @@ async function computeRoute() {
     const response = await client.directions({
       params: {
         origin: addresses["Vanitchkin Steuck"],
-        destination: addresses["Esti Dee"],
+        destination: addresses["School"],
         mode: 'driving', // You can use 'walking', 'bicycling', or 'transit'
         key: apiKey,
       },
@@ -21,6 +21,7 @@ async function computeRoute() {
 
     // Extract route information from the response
     const route = response.data.routes[0];
+    console.log(route);
     const distance = route.legs[0].distance.text;
     const duration = route.legs[0].duration.text;
 
