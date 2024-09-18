@@ -11,7 +11,6 @@ const client = new Client({});
 
 const apiKey = process.env.API_KEY;
 
-console.log(`Your API key is ${apiKey}`);
 
 import { readFileSync } from 'fs';
 
@@ -104,7 +103,7 @@ async function computeRoutesToSchool(locations) {
 
 // computeRoute("Gujrati Chapati", "Esti Dee");
 
-computeRoutes([
+computeRoutesToSchool([
   "Gujrati Chapati",
   "Esti Dee",
   "Japanese Tsunami",
