@@ -18,6 +18,9 @@ import { readFileSync } from 'fs';
 
 const addresses = JSON.parse(readFileSync('addresses.json'));
 
+
+import { bearing } from './angles.js';
+
 /**
  * Computes data papa
  * @param {*} start This can either be an address string or the name of the person at that address (in addresses.json)
@@ -102,12 +105,34 @@ async function computeRoutesToSchool(locations) {
   }
 }
 
+async function toCoords(address) {
+  const response = await client.geocode({
+    params: {
+      address: address,
+      key: apiKey,
+    },
+  })
+  .then(response => {
+    if (response.data.status === 'OK') {
+      const location = response.data.results[0].geometry.location;
+      return location;
+    } else {
+      console.error(`Error: ${response.data.status} - ${response.data.error_message}`);
+      return null;
+    }
+  })
+  .catch(error => {
+    console.error(`An error occurred: ${error}`);
+    return null;
+  });
+}
 
-// computeRoute("Gujrati Chapati", "Esti Dee");
+// console.log(bearing(2, 4, 34, 43));
 
-computeRoutesToSchool([
-  "Gujrati Chapati",
-  "Esti Dee",
-  "Effrey Jepstein",
-  "Bone Dome"
-]);
+toCoords("1151 Junipero Ave, Redwood City, CA").then(location => {
+  // console.log(`${location.lat}, ${location.lng}`);
+  console.log(location);
+}).catch(error => {
+  console.error(`An error occurred: ${error}`);
+  return null;
+});
