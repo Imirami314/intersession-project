@@ -33,3 +33,6 @@ async function initMap() {
   }
   
   initMap();
+
+  $('#sex').text("d")
+  alert('dadada')
