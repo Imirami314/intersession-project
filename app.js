@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const CAR_EMISSIONS = 411; // average grams of CO2 per mile
+
 
 
 import { Client } from '@googlemaps/google-maps-services-js';
@@ -106,5 +108,6 @@ async function computeRoutesToSchool(locations) {
 computeRoutesToSchool([
   "Gujrati Chapati",
   "Esti Dee",
-  "Japanese Tsunami",
+  "Effrey Jepstein",
+  "Bone Dome"
 ]);
