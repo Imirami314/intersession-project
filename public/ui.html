@@ -19,7 +19,7 @@
 
         /* Header styling */
         header {
-            background-color: #35424a;
+            background-color: #3a4852;
             color: #ffffff;
             padding: 20px 0;
             text-align: center;
@@ -27,7 +27,7 @@
 
         /* Navigation bar styling */
         nav {
-            background-color: #e8491d;
+            background-color: #f26644;
             overflow: hidden;
         }
 
@@ -97,7 +97,7 @@
 
         /* Footer styling */
         footer {
-            background-color: #35424a;
+            background-color: #3a4852;
             color: #ffffff;
             text-align: center;
             padding: 10px 0;
@@ -130,6 +130,14 @@
         #autocomplete {
             /* Optional: Add any specific styles for the autocomplete input */
         }
+
+        /* Map container styling */
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+            display: none; /* Hidden initially */
+        }
     </style>
 </head>
 <body>
@@ -155,7 +163,7 @@
         <!-- Home Section -->
         <div id="home" class="section active">
             <h2>Home</h2>
-            <p>Welcome to Lab Lane, your go-to solution for sharting your pants</p>
+            <p>Welcome to Lab Lane, your go-to solution for sharing your pants</p>
         </div>
 
         <!-- About Section -->
@@ -167,21 +175,24 @@
         <!-- Routes Section -->
         <div id="routes" class="section">
             <h2>Routes</h2>
-            <form action="#" method="post">
+            <form id="routesForm" action="#" method="post">
                 <div class="form-group">
                     <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" placeholder="Your name..." required>
+                    <input type="text" id="name" name="name" placeholder="Your full name (e.g. Jane Doe)" required>
                 </div>
                 <div class="form-group">
                     <label for="autocomplete">Address:</label>
-                    <input type="text" id="autocomplete" name="address" placeholder="Your address..." required>
+                    <input type="text" id="autocomplete" name="address" placeholder="Your address" required>
+                    <input type="hidden" id="place_id" name="place_id">
                 </div>
-                <div class="form-group">
-                    <label for="message">Message:</label>
-                    <textarea id="message" name="message" rows="5" placeholder="Your message..." required></textarea>
-                </div>
+               
                 <button type="submit">Submit</button>
+                <p id="error-message" style="color: red; display: none;">Please select a valid address from the suggestions.</p>
             </form>
+            
+
+            <!-- Map Container -->
+            <div id="map"></div>
         </div>
     </div>
 
@@ -194,6 +205,10 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6anhq9BHUJPyoBZARXn3-Mq5PQeY4Qdg&libraries=places"></script>
 
     <script>
+        let placeSelected = false;
+        let selectedPlace = null;
+        let map; // Variable to hold the map instance
+
         // JavaScript to handle showing and hiding sections
         function showSection(sectionId) {
             // Get all sections
@@ -213,8 +228,7 @@
             var input = document.getElementById('autocomplete');
             var autocomplete = new google.maps.places.Autocomplete(input);
 
-            // Optionally, restrict the autocomplete to specific types or geographical bounds
-            // For example, to restrict to addresses:
+            // Restrict the autocomplete to addresses
             autocomplete.setTypes(['address']);
 
             // Add listener to handle place selection
@@ -223,17 +237,78 @@
                 if (!place.geometry) {
                     // User entered the name of a Place that was not suggested and pressed the Enter key
                     window.alert("No details available for input: '" + place.name + "'");
+                    placeSelected = false;
+                    document.getElementById('place_id').value = '';
+                    document.getElementById('map').style.display = 'none';
                     return;
                 }
 
-                // You can perform actions with the selected place here
+                // Valid place selected
+                placeSelected = true;
+                selectedPlace = place; // Store the selected place
+                document.getElementById('place_id').value = place.place_id;
                 console.log('Selected place:', place);
+                document.getElementById('error-message').style.display = 'none';
             });
         }
 
-        // Initialize autocomplete when the page loads
+        // Form submission handler
+        function handleFormSubmission(event) {
+            if (!placeSelected) {
+                event.preventDefault(); // Prevent form submission
+                document.getElementById('error-message').style.display = 'block';
+                alert("Please select a valid address from the suggestions.");
+                return;
+            }
+
+            // Prevent default form submission
+            event.preventDefault();
+
+            // Display the map with the selected address
+            displayMap(selectedPlace);
+        }
+
+        // Function to display the map
+        function displayMap(place) {
+            if (!place || !place.geometry) {
+                alert("Invalid place details.");
+                return;
+            }
+
+            // Get the map container
+            var mapDiv = document.getElementById('map');
+
+            // Show the map container
+            mapDiv.style.display = 'block';
+
+            // If the map is already initialized, just set the new center
+            if (map) {
+                map.setCenter(place.geometry.location);
+                // If you want to add a marker, you can do so here
+                new google.maps.Marker({
+                    map: map,
+                    position: place.geometry.location
+                });
+                return;
+            }
+
+            // Initialize the map
+            map = new google.maps.Map(mapDiv, {
+                center: place.geometry.location,
+                zoom: 15
+            });
+
+            // Add a marker at the selected location
+            new google.maps.Marker({
+                map: map,
+                position: place.geometry.location
+            });
+        }
+        
+        // Initialize autocomplete and form handler when the page loads
         window.onload = function() {
             initAutocomplete();
+            document.getElementById('routesForm').addEventListener('submit', handleFormSubmission);
         };
     </script>
 
