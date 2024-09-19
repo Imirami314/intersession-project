@@ -8,7 +8,6 @@ function toDegrees(radians) {
     return radians * 180 / Math.PI;
 }
 
-
 export function bearing(startLat, startLng, destLat, destLng){
     startLat = toRadians(startLat);
     startLng = toRadians(startLng);

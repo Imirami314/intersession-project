@@ -22,6 +22,10 @@ app.get('/computeRoute', async (req, res) => {
     res.send(route);
 });
 
+app.get('/apiKey', async (req, res) => {
+    res.send(process.env.API_KEY);
+});
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
