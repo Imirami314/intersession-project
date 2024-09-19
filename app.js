@@ -1,52 +1,36 @@
-import express from 'express';
-
-const app = express();
-const port = 3000;
-
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 import dotenv from 'dotenv';
+import { Client } from '@googlemaps/google-maps-services-js';
+import { readFileSync } from 'fs';
+import { bearing } from './public/angles.js';
 
 dotenv.config();
 
 const CAR_EMISSIONS = 411; // average grams of CO2 per mile
 
-
-
-import { Client } from '@googlemaps/google-maps-services-js';
 const client = new Client({});
 
 const apiKey = process.env.API_KEY;
 
-
-import { readFileSync } from 'fs';
-
-
-import { bearing } from './angles.js';
 export const addresses = JSON.parse(readFileSync('addresses.json'));
 
 /**
- * Computes data papa
+ * Computes data :))))
  * @param {*} start This can either be an address string or the name of the person at that address (in addresses.json)
  * @param {*} end This can either be an address string or the name of the person at that address (in addresses.json)
  */
-async function computeRoute(start, end) {
+export async function computeRoute(start, end) {
   try {
     const response = await client.directions({
       params: {
         origin: addresses[start] ?? start,
         destination: addresses[end] ?? end,
-        mode: 'driving', // You can use 'walking', 'bicycling', or 'transit'
+        mode: 'driving', // options are 'driving, 'walking', 'bicycling', 'transit'
         key: apiKey,
       },
       timeout: 1000, // milliseconds
     });
 
-    // Extract route information from the response
+    // handle route information
     const route = response.data.routes[0];
     const distance = route.legs[0].distance.text;
     const duration = route.legs[0].duration.text;
@@ -60,11 +44,11 @@ async function computeRoute(start, end) {
 
     
   } catch (error) {
-    console.error('Error fetching directions:', error.response.data.error_message);
+    console.error('Error fetching directions:', error);
   }
 }
 
-async function computeRoutesToSchool(locations) {
+export async function computeRoutesToSchool(locations) {
   try {
     // Prepare the list of locations for the Distance Matrix API
     const origins = locations.map(location => addresses[location] ?? location); // Origin points
@@ -113,7 +97,7 @@ async function computeRoutesToSchool(locations) {
   }
 }
 
-async function toCoords(address) {
+export async function toCoords(address) {
   const response = await client.geocode({
     params: {
       address: address,
@@ -140,29 +124,19 @@ async function toCoords(address) {
 
 // console.log(bearing(2, 4, 34, 43));
 
-toCoords("1151 Junipero Ave, Redwood City, CA").then(location => {
-  console.log(location);
-}).catch(error => {
-  console.error(`An error occurred: ${error}`);
-  return null;
-});
+// toCoords("1151 Junipero Ave, Redwood City, CA").then(location => {
+//   console.log(location);
+// }).catch(error => {
+//   console.error(`An error occurred: ${error}`);
+//   return null;
+// });
 
 // computeRoute("Gujrati Chapati", "Esti Dee");
 
-computeRoutesToSchool([
-  "Gujrati Chapati",
-  "Esti Dee",
-  "Effrey Jepstein",
-  "Bone Dome"
-]);
+// computeRoutesToSchool([
+//   "Gujrati Chapati",
+//   "Esti Dee",
+//   "Effrey Jepstein",
+//   "Bone Dome"
+// ]);
 
-// Define a route for the home page
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html')
-  // res.send('Ambasing!');
-});
-
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});
