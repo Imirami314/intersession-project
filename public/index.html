@@ -1,27 +1,329 @@
-<!DOCTYPE html>
-<html>
-  <head>
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lab Lane</title>
+    <style>
+        /* Reset some default styles */
+        body, h1, h2, p, ul {
+            margin: 0;
+            padding: 0;
+        }
 
-    <!-- <link rel="stylesheet" type="text/css" href="./style.css" /> -->
-  </head>
-  <body>
-    <iframe
-      width="900"
-      height="500"
-      id="map-embed"
-      frameborder="0" style="border:0"
-      referrerpolicy="no-referrer-when-downgrade"
-      src="https://www.google.com/maps/embed/v1/directions?key=AIzaSyC6anhq9BHUJPyoBZARXn3-Mq5PQeY4Qdg&origin=Oslo+Norway
-      &destination=Telemark+Norway
-      &avoid=tolls|highways"
-      allowfullscreen>
-    </iframe>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+        }
 
-    <div id="emissionsSaved"></div>
-    <!-- prettier-ignore -->
-    <!--<script>(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
-        ({key: "AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg", v: "weekly"});</script>-->
-      <script type="module" src="index.js"></script>
-  </body>
+        /* Header styling */
+        header {
+            background-color: #3a4852;
+            color: #ffffff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        /* Navigation bar styling */
+        nav {
+            background-color: #f26644;
+            overflow: hidden;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 14px 20px;
+            display: block;
+            cursor: pointer;
+        }
+
+        nav ul li a:hover {
+            background-color: #cf4317;
+            border-radius: 4px;
+        }
+
+        /* Main content styling */
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #35424a;
+            color: #ffffff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2a3d45;
+        }
+
+        /* Footer styling */
+        footer {
+            background-color: #3a4852;
+            color: #ffffff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            nav ul {
+                flex-direction: column;
+            }
+
+            nav ul li {
+                margin: 5px 0;
+            }
+        }
+
+        /* Hide sections initially */
+        .section {
+            display: none;
+        }
+        /* Show the section that is currently active */
+        .section.active {
+            display: block;
+        }
+
+        /* Style for the autocomplete input */
+        #autocomplete {
+            /* Optional: Add any specific styles for the autocomplete input */
+        }
+
+        /* Map container styling */
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+            display: none; /* Hidden initially */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <h1>Lab Lane</h1>
+        <p>Welcome to Lab Lane</p>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <ul>
+            <li><a onclick="showSection('home')">Home</a></li>
+            <li><a onclick="showSection('about')">About</a></li>
+            <li><a onclick="showSection('routes')">Routes</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content Sections -->
+    <div class="container">
+
+        <!-- Home Section -->
+        <div id="home" class="section active">
+            <h2>Home</h2>
+            <p>Welcome to Lab Lane, your go-to solution for sharing your pants</p>
+        </div>
+
+        <!-- About Section -->
+        <div id="about" class="section">
+            <h2>About Us</h2>
+            <p>Lab Lane is dedicated to helping you find the best routes to the nearest minor</p>
+        </div>
+
+        <!-- Routes Section -->
+        <div id="routes" class="section">
+            <h2>Routes</h2>
+            <form id="routesForm" action="#" method="post">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" placeholder="Your full name (e.g. Jane Doe)" required>
+                </div>
+                <div class="form-group">
+                    <label for="autocomplete">Address:</label>
+                    <input type="text" id="autocomplete" name="address" placeholder="Your address" required>
+                    <input type="hidden" id="place_id" name="place_id">
+                </div>
+               
+                <button type="submit">Submit</button>
+                <p id="error-message" style="color: red; display: none;">Please select a valid address from the suggestions.</p>
+
+                <div id="continue-container">
+                    <br>
+                </div>
+            </form>
+            
+
+            <!-- Map Container -->
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>Bringing you to KLS</p>
+    </footer>
+
+    <!-- Google Maps API Script -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6anhq9BHUJPyoBZARXn3-Mq5PQeY4Qdg&libraries=places"></script>
+
+    <script>
+        let placeSelected = false;
+        let selectedPlace = null;
+        let map; // Variable to hold the map instance
+
+        // JavaScript to handle showing and hiding sections
+        function showSection(sectionId) {
+            // Get all sections
+            var sections = document.querySelectorAll('.section');
+
+            // Loop through all sections and hide them
+            sections.forEach(function(section) {
+                section.classList.remove('active');
+            });
+
+            // Show the selected section
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        // Initialize Google Places Autocomplete
+        function initAutocomplete() {
+            var input = document.getElementById('autocomplete');
+            var autocomplete = new google.maps.places.Autocomplete(input);
+
+            // Restrict the autocomplete to addresses
+            autocomplete.setTypes(['address']);
+
+            // Add listener to handle place selection
+            autocomplete.addListener('place_changed', function() {
+                var place = autocomplete.getPlace();
+                if (!place.geometry) {
+                    // User entered the name of a Place that was not suggested and pressed the Enter key
+                    window.alert("No details available for input: '" + place.name + "'");
+                    placeSelected = false;
+                    document.getElementById('place_id').value = '';
+                    document.getElementById('map').style.display = 'none';
+                    return;
+                }
+
+                // Valid place selected
+                placeSelected = true;
+                selectedPlace = place; // Store the selected place
+                document.getElementById('place_id').value = place.place_id;
+                console.log('Selected place:', place);
+                document.getElementById('error-message').style.display = 'none';
+            });
+        }
+
+        // Form submission handler
+        function handleFormSubmission(event) {
+            if (!placeSelected) {
+                event.preventDefault(); // Prevent form submission
+                document.getElementById('error-message').style.display = 'block';
+                alert("Please select a valid address from the suggestions.");
+                return;
+            }
+
+            // Prevent default form submission
+            event.preventDefault();
+
+            // Display the map with the selected address
+            displayMap(selectedPlace);
+
+            // Create a new button element
+            const button = document.createElement("button");
+            button.innerText = "Confirm my Address";
+            button.addEventListener("click", function() {
+                sessionStorage.setItem("address", document.getElementById("autocomplete").value);
+                window.location.href = "carpool.html";
+            });
+            document.getElementById("continue-container").appendChild(button);
+        }
+
+        // Function to display the map
+        function displayMap(place) {
+            if (!place || !place.geometry) {
+                alert("Invalid place details.");
+                return;
+            }
+
+            // Get the map container
+            var mapDiv = document.getElementById('map');
+
+            // Show the map container
+            mapDiv.style.display = 'block';
+
+            // If the map is already initialized, just set the new center
+            if (map) {
+                map.setCenter(place.geometry.location);
+                // If you want to add a marker, you can do so here
+                new google.maps.Marker({
+                    map: map,
+                    position: place.geometry.location
+                });
+                return;
+            }
+
+            // Initialize the map
+            map = new google.maps.Map(mapDiv, {
+                center: place.geometry.location,
+                zoom: 15
+            });
+
+            // Add a marker at the selected location
+            new google.maps.Marker({
+                map: map,
+                position: place.geometry.location
+            });
+        }
+        
+        // Initialize autocomplete and form handler when the page loads
+        window.onload = function() {
+            initAutocomplete();
+            document.getElementById('routesForm').addEventListener('submit', handleFormSubmission);
+        };
+    </script>
+
+</body>
 </html>

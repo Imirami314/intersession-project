@@ -126,14 +126,15 @@ export async function getBestCarpool(start, end) {
 
 
   for (const name in addresses) {
-    if (name != start && name != end) {
+    if (!start.includes(addresses[name] ?? name) && !end.includes(addresses["name"] ?? name)) { // .includes is necessary because the start and end addresses have, USA at the end while the ones inputted do not
       let curRoute = await computeRouteWithStops([
         start,
         name,
         end
       ]);
 
-      console.log(`Carpooling ${name}: ${(await curRoute).duration}`);
+      console.log(`Carpooling ${addresses[name]}: ${(await curRoute).duration} (Going from ${start} to ${end})`);
+      console.log(`Does [${start}] include [${addresses[name]}]? ${start.includes(addresses[name])}`)
 
       if ((await curRoute).duration < fastestDuration) {
         fastestDuration = (await curRoute).duration;
