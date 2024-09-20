@@ -5,8 +5,6 @@ import { bearing } from './public/angles.js';
 
 dotenv.config();
 
-const CAR_EMISSIONS = 411; // average grams of CO2 per mile
-
 const client = new Client({});
 
 const apiKey = process.env.API_KEY;
@@ -122,8 +120,10 @@ export async function computeRoutesToSchool(locations) {
 }
 
 export async function getBestCarpool(start, end) {
-  let fastestTime = 140837;
+  let fastestDuration = 140837;
   let fastestName = "g";
+  let fastestDist = 140838;
+
 
   for (const name in addresses) {
     if (name != start && name != end) {
@@ -135,16 +135,25 @@ export async function getBestCarpool(start, end) {
 
       console.log(`Carpooling ${name}: ${(await curRoute).duration}`);
 
-      if ((await curRoute).duration < fastestTime) {
-        fastestTime = (await curRoute).duration;
+      if ((await curRoute).duration < fastestDuration) {
+        fastestDuration = (await curRoute).duration;
+        fastestDist = (await curRoute).distance;
         fastestName = name;
       }
     }
   }
 
   console.log(`${fastestName} is the best carpool`)
-  return fastestName;
+  
+
+  return {
+    name: fastestName,
+    distance: fastestDist,
+    duration: fastestDuration
+  };
 }
+
+
 
 export async function toCoords(address) {
   const response = await client.geocode({
@@ -171,6 +180,18 @@ export async function toCoords(address) {
   return response;
 }
 
+export async function getDistanceSaved(start, stop, end, route) {
+    let carpoolDist = route.distance
+
+    // calculation: start to end + stop to end - route
+    let startToEnd = parseFloat((await computeRoute(addresses[start] ?? start, addresses[end] ?? end)).distance)
+    let stopToEnd = parseFloat((await computeRoute(addresses[stop] ?? stop, addresses[end] ?? end)).distance)
+
+    // let distSaved = Math.round((startToEnd + stopToEnd - carpoolDist) * 10) / 10;
+    // console.log(`From ${start} to ${end}: distance saved is ${distSaved}`);
+    // console.log(distSaved);
+    return Math.round((startToEnd + stopToEnd - carpoolDist) * 10) / 10;
+}
 
 
 // console.log(await computeRouteWithStops([
@@ -191,3 +212,9 @@ export async function toCoords(address) {
 //   console.error(`An error occurred: ${error}`);
 //   return null;
 // });
+
+// const theBestCarpool = await getBestCarpool("Esti Dee", "School");
+
+// const theDistanceSaved = await getDistanceSaved("Esti Dee", "Vidit Bhatia", "School", await theBestCarpool);
+
+// console.log(theDistanceSaved);

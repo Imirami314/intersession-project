@@ -2,7 +2,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import express from 'express';
 
-import { computeRoute, addresses, computeRouteWithStops, getBestCarpool } from './app.js';
+import { computeRoute, addresses, computeRouteWithStops, getBestCarpool, getDistanceSaved } from './app.js';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,11 +30,16 @@ app.get('/computeRouteWithStops', async (req, res) => {
 
 app.get('/getBestCarpool', async (req, res) => {
     const bestCarpool = await getBestCarpool(req.query.start, req.query.end);
-    res.send({name: bestCarpool});
+    res.send(bestCarpool);
 });
 
 app.get('/apiKey', async (req, res) => {
     res.send(process.env.API_KEY);
+});
+
+app.get('/getDistanceSaved', async (req, res) => {
+    const distanceSaved = await getDistanceSaved(req.query.start, req.query.stop, req.query.end, JSON.parse(req.query.route));
+    res.send({distanceSaved: distanceSaved});
 });
 
 // Start the server
