@@ -29,6 +29,7 @@ async function calculateBestCarpoolRoute(start, end) {
 
   console.log(bestCarpool);
   document.getElementById("emissionsSaved").textContent = "You saved " + emmisionsSaved + "g of CO2!"
+  document.getElementById("carpool-name").textContent = "Your fastest carpool is with " + bestCarpool.name + ".";
 
   const route = {
     origin: (addresses)[start] ?? start,
@@ -60,8 +61,9 @@ async function calculateBestCarpoolRoute(start, end) {
   const mapEmbedLink = `https://www.google.com/maps/embed/v1/directions?key=AIzaSyC6anhq9BHUJPyoBZARXn3-Mq5PQeY4Qdg&${urlRoute}&waypoints=${stopsUrlString}`;
   console.log(mapEmbedLink)
   document.getElementById("map-embed").src = mapEmbedLink;
+  document.getElementById("map-embed").style = "visibility: visible;";
+  document.getElementById("loading-text").style = "visibility: hidden;";
 
 }
 
-// calculateBestCarpoolRoute(sessionStorage.getItem("address"), "School")
 calculateBestCarpoolRoute(userAddress, "School");
