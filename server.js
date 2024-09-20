@@ -2,7 +2,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import express from 'express';
 
-import { computeRoute, addresses } from './app.js';
+import { computeRoute, addresses, computeRouteWithStops, getBestCarpool } from './app.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,6 +20,16 @@ app.get('/addresses', async (req, res) => {
 app.get('/computeRoute', async (req, res) => {
     const route = await computeRoute(req.query.start, req.query.end);
     res.send(route);
+});
+
+app.get('/computeRouteWithStops', async (req, res) => {
+    const route = await computeRouteWithStops(req.query.locations);
+    res.send(route);
+});
+
+app.get('/getBestCarpool', async (req, res) => {
+    const bestCarpool = await getBestCarpool(req.query.start, req.query.end);
+    res.send({name: bestCarpool});
 });
 
 app.get('/apiKey', async (req, res) => {

@@ -1,46 +1,48 @@
-const addresses = (await fetch('/addresses')).json();
+// import { findPlaceFromText } from "@googlemaps/google-maps-services-js/dist/places/findplacefromtext";
+
+const addresses = (await (await fetch('/addresses')).json());
+
+
 // const apiKey = (await fetch('/apiKey')).json();
 
-// console.log((await addresses)["Wilson"]);
-
-// const route = {
-//   start: 'Wilson',
-//   end: "Esti Dee",
-// };
-
-const startName = "Wilson";
+const startName = "Esti Dee";
 const endName = "School";
 
+const bestCarpool = (await (await fetch(`/getBestCarpool?start=${startName}&end=${endName}`)).json()).name;
+
+console.log(bestCarpool);
+
+const route = {
+  origin: (addresses)[startName],
+  destination: (addresses)[endName]
+}
+
+const urlRoute = new URLSearchParams(route); // will return "origin=[origin]&destination=[destination]" and replaces spaces with %20s
+
 const stopNames = [
-  "Polly Paul",
-  "Jamal 18 in.",
-  "Kevin Cosby",
-  "Carlos Desposito"
+  bestCarpool
 ];
 
 const stopAddresses = await Promise.all(stopNames.map(async (name) => (await addresses)[name]));
 
-function getStopsUrlString() {
+async function getStopsUrlString() {
   let result = "";
-  stopAddresses.forEach((address, index) => {
-    if (index == 0) {
+
+  for (let index = 0; index < stopAddresses.length; index++) {
+    const address = await stopAddresses[index];
+    if (index === 0) {
       result += address;
     } else {
       result += "|" + address;
     }
-  });
+  }
 
   return result;
 }
 
+// Example usage
+const stopsUrlString = await getStopsUrlString();
 
-const route = {
-  origin: (await addresses)[startName],
-  destination: (await addresses)[endName]
-}
-
-const urlRoute = new URLSearchParams(route);
-
-document.getElementById("map-embed").src = `https://www.google.com/maps/embed/v1/directions?key=AIzaSyC6anhq9BHUJPyoBZARXn3-Mq5PQeY4Qdg&${urlRoute}&waypoints=${getStopsUrlString()}`;
-
-// const response = await fetch('/computeRoute?' + urlRoute.toString());
+const mapEmbedLink = `https://www.google.com/maps/embed/v1/directions?key=AIzaSyC6anhq9BHUJPyoBZARXn3-Mq5PQeY4Qdg&${urlRoute}&waypoints=${stopsUrlString}`;
+console.log(mapEmbedLink)
+document.getElementById("map-embed").src = mapEmbedLink;

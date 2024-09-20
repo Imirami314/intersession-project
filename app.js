@@ -34,18 +34,42 @@ export async function computeRoute(start, end) {
     const route = response.data.routes[0];
     const distance = route.legs[0].distance.text;
     const duration = route.legs[0].duration.text;
-    console.log(`Distance: ${distance}`);
-    console.log(`Duration: ${duration}`);
+    // console.log(`From ${start} to ${end}`)
+    // console.log(`Distance: ${distance}`);
+    // console.log(`Duration: ${duration}`);
     
     return {
         distance: distance,
         duration: duration
     }
-
-    
   } catch (error) {
     console.error('Error fetching directions:', error);
   }
+}
+
+export async function computeRouteWithStops(locations) {
+  let total = {
+    distance: 0,
+    duration: 0
+  };
+
+  const routePromises = [];
+
+  // Generate promises for each route segment
+  for (let i = 0; i < locations.length - 1; i++) {
+    routePromises.push(computeRoute(locations[i], locations[i + 1]));
+  }
+
+  // Wait for all route segments to be computed in parallel
+  const routeSegments = await Promise.all(routePromises);
+
+  // Sum up distance and time
+  for (const segment of routeSegments) {
+    total.distance += parseFloat(await segment.distance);
+    total.duration += parseFloat(await segment.duration);
+  }
+
+  return total;
 }
 
 export async function computeRoutesToSchool(locations) {
@@ -97,6 +121,31 @@ export async function computeRoutesToSchool(locations) {
   }
 }
 
+export async function getBestCarpool(start, end) {
+  let fastestTime = 140837;
+  let fastestName = "g";
+
+  for (const name in addresses) {
+    if (name != start && name != end) {
+      let curRoute = await computeRouteWithStops([
+        start,
+        name,
+        end
+      ]);
+
+      console.log(`Carpooling ${name}: ${(await curRoute).duration}`);
+
+      if ((await curRoute).duration < fastestTime) {
+        fastestTime = (await curRoute).duration;
+        fastestName = name;
+      }
+    }
+  }
+
+  console.log(`${fastestName} is the best carpool`)
+  return fastestName;
+}
+
 export async function toCoords(address) {
   const response = await client.geocode({
     params: {
@@ -122,7 +171,19 @@ export async function toCoords(address) {
   return response;
 }
 
-// console.log(bearing(2, 4, 34, 43));
+
+
+// console.log(await computeRouteWithStops([
+//   "Esti Dee",
+//   "Japanese Tsunami",
+//   "Wilson",
+//   "Prince Poner",
+//   "Burrek the Town Rapist"
+// ]));
+
+// console.log(await getBestCarpool("Esti Dee", "School"));
+
+
 
 // toCoords("1151 Junipero Ave, Redwood City, CA").then(location => {
 //   console.log(location);
@@ -130,13 +191,3 @@ export async function toCoords(address) {
 //   console.error(`An error occurred: ${error}`);
 //   return null;
 // });
-
-// computeRoute("Gujrati Chapati", "Esti Dee");
-
-// computeRoutesToSchool([
-//   "Gujrati Chapati",
-//   "Esti Dee",
-//   "Effrey Jepstein",
-//   "Bone Dome"
-// ]);
-
