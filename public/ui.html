@@ -208,6 +208,7 @@
         let placeSelected = false;
         let selectedPlace = null;
         let map; // Variable to hold the map instance
+        let marker = null; // Variable to hold the current marker
 
         // JavaScript to handle showing and hiding sections
         function showSection(sectionId) {
@@ -284,11 +285,17 @@
             // If the map is already initialized, just set the new center
             if (map) {
                 map.setCenter(place.geometry.location);
-                // If you want to add a marker, you can do so here
-                new google.maps.Marker({
-                    map: map,
-                    position: place.geometry.location
-                });
+                
+                // If a marker exists, update its position
+                if (marker) {
+                    marker.setPosition(place.geometry.location);
+                } else {
+                    // If no marker exists, create a new one
+                    marker = new google.maps.Marker({
+                        map: map,
+                        position: place.geometry.location
+                    });
+                }
                 return;
             }
 
@@ -299,7 +306,7 @@
             });
 
             // Add a marker at the selected location
-            new google.maps.Marker({
+            marker = new google.maps.Marker({
                 map: map,
                 position: place.geometry.location
             });
