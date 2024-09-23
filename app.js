@@ -154,8 +154,6 @@ export async function getBestCarpool(start, end) {
   };
 }
 
-
-
 export async function toCoords(address) {
   const response = await client.geocode({
     params: {
@@ -188,34 +186,5 @@ export async function getDistanceSaved(start, stop, end, route) {
     let startToEnd = parseFloat((await computeRoute(addresses[start] ?? start, addresses[end] ?? end)).distance)
     let stopToEnd = parseFloat((await computeRoute(addresses[stop] ?? stop, addresses[end] ?? end)).distance)
 
-    // let distSaved = Math.round((startToEnd + stopToEnd - carpoolDist) * 10) / 10;
-    // console.log(`From ${start} to ${end}: distance saved is ${distSaved}`);
-    // console.log(distSaved);
-    return Math.round((startToEnd + stopToEnd - carpoolDist) * 10) / 10;
+    return Math.round((startToEnd + stopToEnd - carpoolDist));
 }
-
-
-// console.log(await computeRouteWithStops([
-//   "Esti Dee",
-//   "Japanese Tsunami",
-//   "Wilson",
-//   "Prince Poner",
-//   "Burrek the Town Rapist"
-// ]));
-
-// console.log(await getBestCarpool("Esti Dee", "School"));
-
-
-
-// toCoords("1151 Junipero Ave, Redwood City, CA").then(location => {
-//   console.log(location);
-// }).catch(error => {
-//   console.error(`An error occurred: ${error}`);
-//   return null;
-// });
-
-// const theBestCarpool = await getBestCarpool("Esti Dee", "School");
-
-// const theDistanceSaved = await getDistanceSaved("Esti Dee", "Vidit Bhatia", "School", await theBestCarpool);
-
-// console.log(theDistanceSaved);

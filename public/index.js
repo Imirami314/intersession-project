@@ -32,8 +32,13 @@ async function calculateBestCarpoolRoute(start, end) {
   const emmisionsSaved = distanceSaved * CAR_EMISSIONS;
 
   console.log(bestCarpool);
-  document.getElementById("emissionsSaved").textContent = "You saved " + emmisionsSaved + "g of CO2!"
-  document.getElementById("carpool-name").textContent = "Your fastest carpool is with " + bestCarpool.name + ".";
+  if (emmisionsSaved >= 0) {
+    document.getElementById("emissionsSaved").textContent = "You saved " + emmisionsSaved + "g of CO2!"
+    document.getElementById("carpool-name").textContent = "Your fastest carpool is with " + bestCarpool.name + ".";
+  } else {
+    // document.getElementById("emissionsSaved").textContent = "You saved " + emmisionsSaved + "g of CO2!"
+    document.getElementById("carpool-name").textContent = "Your fastest carpool is with " + bestCarpool.name + ", however this carpool uses more CO2 than if both of you just drove directly to school.";
+  }
 
   const route = {
     origin: (addresses)[start] ?? start,
