@@ -1,11 +1,15 @@
-// import { findPlaceFromText } from "@googlemaps/google-maps-services-js/dist/places/findplacefromtext";
+// async function loadAddresses() {  
+//   const addresses = (await (await fetch('/addresses')).json());
+// }
 
-const addresses = (await (await fetch('/addresses')).json());
+// loadAddresses();
 
-const userAddress = sessionStorage.getItem("address");
+// const userAddress = sessionStorage.getItem("address");
 // const apiKey = (await fetch('/apiKey')).json();
 
 async function calculateBestCarpoolRoute(start, end) {
+
+  const addresses = (await (await fetch('/addresses')).json());
 
   const bestCarpool = (await (await fetch(`/getBestCarpool?start=${start}&end=${end}`)).json());
 
@@ -61,9 +65,10 @@ async function calculateBestCarpoolRoute(start, end) {
   const mapEmbedLink = `https://www.google.com/maps/embed/v1/directions?key=AIzaSyC6anhq9BHUJPyoBZARXn3-Mq5PQeY4Qdg&${urlRoute}&waypoints=${stopsUrlString}`;
   console.log(mapEmbedLink)
   document.getElementById("map-embed").src = mapEmbedLink;
-  document.getElementById("map-embed").style = "visibility: visible;";
-  document.getElementById("loading-text").style = "visibility: hidden;";
+  document.getElementById("map-embed").style.display = "block";
+  document.getElementById("map").style.display = "none";
+  // document.getElementById("loading-text").style.display = "none";
 
 }
 
-calculateBestCarpoolRoute(userAddress, "School");
+// calculateBestCarpoolRoute(userAddress, "School");
